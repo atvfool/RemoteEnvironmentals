@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Server.Classes;
 using Server.Models;
 using System.Diagnostics;
 
@@ -15,7 +16,9 @@ namespace Server.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            Database db = new Database();
+            List<PingModel> pings = db.GetPings();
+            return View(pings);
         }
 
         public IActionResult Privacy()

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Server.Classes;
 using Server.Models;
 
 namespace Server.Controllers
@@ -12,6 +13,8 @@ namespace Server.Controllers
         [HttpPost]
         public JsonResult ping(PingModel parameters)
         {
+            Database db = new Database();
+            db.SavePing(parameters);
             return new JsonResult(parameters);
         }
         [HttpGet]
