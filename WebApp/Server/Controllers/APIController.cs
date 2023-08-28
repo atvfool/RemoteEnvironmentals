@@ -1,20 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Server.Classes;
-using Server.Models;
+﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.Mvc;
+using Utilities;
+using Utilities.Models;
 
 namespace Server.Controllers
 {
     public class APIController : Controller
     {
-        public IActionResult Index()
+        private string GetPreSharedKey()
         {
-            return View();
+            var presharedkey = Environment.GetEnvironmentVariable("PRESHAREDKEY");
+            if (presharedkey == null)
+            {
+                Console.WriteLine("You must set your 'PRESHAREDKEY' environment variable.");
+                Environment.Exit(0);
+            }
+            return presharedkey;
         }
         [HttpPost]
-        public JsonResult ping(PingModel parameters)
+        public JsonResult ping(PingModel parameters, string key)
         {
-            Database db = new Database();
-            return new JsonResult(db.SavePing(parameters));
+            bool result = false;
+            if(GetPreSharedKey() == key)
+            {
+                Database db = new Database();
+                result = db.SavePing(parameters);
+                
+            }
+            return new JsonResult("{success: " + result.ToString() + "}");
+
         }
         [HttpGet]
         public JsonResult list()
@@ -29,10 +43,22 @@ namespace Server.Controllers
             return new JsonResult(db.GetSettings());
         }
         [HttpPost]
-        public JsonResult SaveSettings(SettingsModel settings)
+        public JsonResult SaveSettings(SettingsModel settings, string key)
+        {
+            bool result = false;
+            if (GetPreSharedKey() == key)
+            {
+                Database db = new Database();
+                result = db.SaveSettings(settings);
+            }
+            return new JsonResult("{success: " + result.ToString() + "}");
+        }
+
+        [HttpGet]
+        public JsonResult GetLatestPing()
         {
             Database db = new Database();
-            return new JsonResult(db.SaveSettings(settings));
+            return new JsonResult(db.GetLatestPing());
         }
 
     }

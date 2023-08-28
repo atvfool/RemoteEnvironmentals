@@ -1,11 +1,12 @@
 ﻿using MongoDB.Driver;
 using MongoDB.Bson;
-using Server.Models;
+using Utilities.Models;
 
-namespace Server.Classes
+namespace Utilities
 {
     public class Database
     {
+        public const string DATABASE_NAME = "admin";
         private string GetConnectionString()
         {
             var connectionString = Environment.GetEnvironmentVariable("MONGODB_URI");
@@ -16,32 +17,26 @@ namespace Server.Classes
             }
             return connectionString;
         }
-        public bool Test()
+        private MongoClient GetClient()
         {
             string connectionString = GetConnectionString();
-
             var client = new MongoClient(connectionString);
 
-            var collection = client.GetDatabase("admin").GetCollection<BsonDocument>("pings");
+            return client;
+        }
 
-            var filter = Builders<BsonDocument>.Filter.Empty;
-
-            var document = collection.Find(filter).First();
-
-            Console.WriteLine(document);
-
-            return true;
-
+        private IMongoDatabase GetDB()
+        {
+            var database = GetClient().GetDatabase(DATABASE_NAME);
+            return database;
         }
 
         public bool SavePing(PingModel ping)
         {
             bool result = false;
-
-            string connectionString = GetConnectionString();
-
-            var client = new MongoClient(connectionString);
-            var collection = client.GetDatabase("admin").GetCollection<PingModel>("pings");
+            if(ping.PingTime.Year < 2023)
+                ping.PingTime = DateTime.Now;
+            var collection = GetDB().GetCollection<PingModel>("pings");
             collection.InsertOne(ping);
             result = true;
             return result;
@@ -51,9 +46,7 @@ namespace Server.Classes
         {
             List<PingModel> pings = new List<PingModel>();
 
-            string connectionString = GetConnectionString();
-            var client = new MongoClient(connectionString);
-            var collection = client.GetDatabase("admin").GetCollection<PingModel>("pings");
+            var collection = GetDB().GetCollection<PingModel>("pings");
             var filter = Builders<PingModel>.Filter.Empty;
             pings = collection.Find(filter).ToList();
 
@@ -64,9 +57,7 @@ namespace Server.Classes
         {
             bool result = false;
 
-            string connectionString = GetConnectionString();
-            var client = new MongoClient(connectionString);
-            var collection = client.GetDatabase("admin").GetCollection<SettingsModel>("settings");
+            var collection = GetDB().GetCollection<SettingsModel>("settings");
             var filter = Builders<SettingsModel>.Filter.Empty;
             var update = Builders<SettingsModel>.Update.Set(setting => setting.PingInterval, settings.PingInterval).Set(setting =>setting.ResetInterval, settings.ResetInterval);
             collection.UpdateOne(filter, update);
@@ -78,13 +69,22 @@ namespace Server.Classes
         public SettingsModel GetSettings()
         {
             SettingsModel settings = new SettingsModel();
-            string connectionString = GetConnectionString();
-            var client = new MongoClient(connectionString);
-            var collection = client.GetDatabase("admin").GetCollection<SettingsModel>("settings");
+            var collection = GetDB().GetCollection<SettingsModel>("settings");
             var filter = Builders<SettingsModel>.Filter.Empty;
             settings = collection.Find(filter).ToList().FirstOrDefault();
 
             return settings;
+        }
+
+        public PingModel GetLatestPing()
+        {
+            var ping = new PingModel();
+            var collection = GetDB().GetCollection<PingModel>("pings");
+            var sort = Builders<PingModel>.Sort.Descending(p => p.PingTime);
+            var filter = Builders<PingModel>.Filter.Empty;
+            ping = collection.Find(filter).Sort(sort).FirstOrDefault();
+
+            return ping;
         }
     }
 }

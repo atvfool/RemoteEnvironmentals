@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Server.Classes;
+using Utilities;
+using Utilities.Models;
 using Server.Models;
 using System.Diagnostics;
 
