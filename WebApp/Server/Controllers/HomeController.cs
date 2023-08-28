@@ -21,6 +21,13 @@ namespace Server.Controllers
             return View(pings);
         }
 
+        public IActionResult Settings()
+        {
+            Database db = new Database();
+            SettingsModel model= db.GetSettings();
+            return View(model);
+        }
+
         public IActionResult Privacy()
         {
             return View();

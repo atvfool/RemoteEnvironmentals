@@ -1,0 +1,11 @@
+﻿@model SettingsModel
+
+@Html.Hidden("Id", Model.Id)
+<div>
+    Ping Interval
+    @Html.TextBox("PingInterval", Model.PingInterval)
+</div>
+<div>
+    Reboot Interval
+    @Html.TextBox("RebootInterval", Model.ResetInterval)
+</div>

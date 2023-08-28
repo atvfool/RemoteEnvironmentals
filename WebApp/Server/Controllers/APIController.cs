@@ -14,23 +14,25 @@ namespace Server.Controllers
         public JsonResult ping(PingModel parameters)
         {
             Database db = new Database();
-            db.SavePing(parameters);
-            return new JsonResult(parameters);
+            return new JsonResult(db.SavePing(parameters));
         }
         [HttpGet]
         public JsonResult list()
         {
-            return new JsonResult("");
+            Database db = new Database();
+            return new JsonResult(db.GetPings());
         }
         [HttpGet]
-        public JsonResult GetSettings()
+        public JsonResult GetSettings(SettingsModel parameters)
         {
-            return new JsonResult("");
+            Database db = new Database();
+            return new JsonResult(db.GetSettings());
         }
         [HttpPost]
         public JsonResult SaveSettings(SettingsModel settings)
         {
-            return new JsonResult(settings);
+            Database db = new Database();
+            return new JsonResult(db.SaveSettings(settings));
         }
 
     }

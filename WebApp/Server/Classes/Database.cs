@@ -43,7 +43,7 @@ namespace Server.Classes
             var client = new MongoClient(connectionString);
             var collection = client.GetDatabase("admin").GetCollection<PingModel>("pings");
             collection.InsertOne(ping);
-
+            result = true;
             return result;
         }
 
@@ -58,6 +58,33 @@ namespace Server.Classes
             pings = collection.Find(filter).ToList();
 
             return pings;
+        }
+
+        public bool SaveSettings(SettingsModel settings)
+        {
+            bool result = false;
+
+            string connectionString = GetConnectionString();
+            var client = new MongoClient(connectionString);
+            var collection = client.GetDatabase("admin").GetCollection<SettingsModel>("settings");
+            var filter = Builders<SettingsModel>.Filter.Empty;
+            var update = Builders<SettingsModel>.Update.Set(setting => setting.PingInterval, settings.PingInterval).Set(setting =>setting.ResetInterval, settings.ResetInterval);
+            collection.UpdateOne(filter, update);
+            result = true;
+
+            return result;
+        }
+
+        public SettingsModel GetSettings()
+        {
+            SettingsModel settings = new SettingsModel();
+            string connectionString = GetConnectionString();
+            var client = new MongoClient(connectionString);
+            var collection = client.GetDatabase("admin").GetCollection<SettingsModel>("settings");
+            var filter = Builders<SettingsModel>.Filter.Empty;
+            settings = collection.Find(filter).ToList().FirstOrDefault();
+
+            return settings;
         }
     }
 }
