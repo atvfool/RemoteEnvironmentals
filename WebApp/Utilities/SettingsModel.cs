@@ -11,5 +11,9 @@ namespace Utilities.Models
         public Double PingInterval { get; set; }
         [BsonElement("rebootInterval")]
         public Double ResetInterval { get; set; }
+        [BsonElement("watcherCheckInterval")]
+        public Double WatcherCheckInterval { get; set; }
+        [BsonElement("watcherMissedPingsBeforeNotification")]
+        public Double WatcherMissedPingsBeforeNotification { get;set; }
     }
 }

@@ -76,12 +76,18 @@ namespace Utilities
             return settings;
         }
 
-        public PingModel GetLatestPing()
+        public List<string> GetLocationsForNotification()
+        {
+            List<string> locations = GetPings().Where(x => x.SendNotification == true).Select(x => x.Location).Distinct().ToList();
+
+            return locations;
+        }
+        public PingModel GetLatestPing(string Location)
         {
             var ping = new PingModel();
             var collection = GetDB().GetCollection<PingModel>("pings");
             var sort = Builders<PingModel>.Sort.Descending(p => p.PingTime);
-            var filter = Builders<PingModel>.Filter.Empty;
+            var filter = Builders<PingModel>.Filter.Eq(p=>p.Location,Location);
             ping = collection.Find(filter).Sort(sort).FirstOrDefault();
 
             return ping;

@@ -15,6 +15,7 @@ namespace Utilities.Models
         public Double Humidity { get; set; }
         [BsonElement("temp")]
         public Double Temperature { get; set; }
-
+        [BsonElement("sendNotification")]
+        public bool SendNotification { get; set; }
     }
 }
