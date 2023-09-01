@@ -5,9 +5,9 @@ VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server.csproj", "{EC759F2D-6710-4920-AD6C-D63404D99367}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watcher", "..\Watcher\Watcher.csproj", "{0F3831C6-91E9-40A9-BB0C-5421A23BDCAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watcher", "..\Watcher\Watcher.csproj", "{0F3831C6-91E9-40A9-BB0C-5421A23BDCAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "..\Utilities\Utilities.csproj", "{95685AEB-49C2-480B-8166-C333E9266475}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", "..\Utilities\Utilities.csproj", "{95685AEB-49C2-480B-8166-C333E9266475}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

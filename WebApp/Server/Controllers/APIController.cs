@@ -55,10 +55,10 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetLatestPing()
+        public JsonResult GetLatestPing(string location)
         {
             Database db = new Database();
-            return new JsonResult(db.GetLatestPing());
+            return new JsonResult(db.GetLatestPing(location));
         }
 
     }

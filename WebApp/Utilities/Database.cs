@@ -7,6 +7,8 @@ namespace Utilities
     public class Database
     {
         public const string DATABASE_NAME = "admin";
+        public const string PINGS_NAME = "pings";
+        public const string SETTINGS_NAME = "settings";
         private string GetConnectionString()
         {
             var connectionString = Environment.GetEnvironmentVariable("MONGODB_URI");
@@ -36,7 +38,7 @@ namespace Utilities
             bool result = false;
             if(ping.PingTime.Year < 2023)
                 ping.PingTime = DateTime.Now;
-            var collection = GetDB().GetCollection<PingModel>("pings");
+            var collection = GetDB().GetCollection<PingModel>(PINGS_NAME);
             collection.InsertOne(ping);
             result = true;
             return result;
@@ -46,7 +48,7 @@ namespace Utilities
         {
             List<PingModel> pings = new List<PingModel>();
 
-            var collection = GetDB().GetCollection<PingModel>("pings");
+            var collection = GetDB().GetCollection<PingModel>(PINGS_NAME);
             var filter = Builders<PingModel>.Filter.Empty;
             pings = collection.Find(filter).ToList();
 
@@ -57,7 +59,7 @@ namespace Utilities
         {
             bool result = false;
 
-            var collection = GetDB().GetCollection<SettingsModel>("settings");
+            var collection = GetDB().GetCollection<SettingsModel>(SETTINGS_NAME);
             var filter = Builders<SettingsModel>.Filter.Empty;
             var update = Builders<SettingsModel>.Update.Set(setting => setting.PingInterval, settings.PingInterval).Set(setting =>setting.ResetInterval, settings.ResetInterval);
             collection.UpdateOne(filter, update);
@@ -69,7 +71,7 @@ namespace Utilities
         public SettingsModel GetSettings()
         {
             SettingsModel settings = new SettingsModel();
-            var collection = GetDB().GetCollection<SettingsModel>("settings");
+            var collection = GetDB().GetCollection<SettingsModel>(SETTINGS_NAME);
             var filter = Builders<SettingsModel>.Filter.Empty;
             settings = collection.Find(filter).ToList().FirstOrDefault();
 
@@ -85,7 +87,7 @@ namespace Utilities
         public PingModel GetLatestPing(string Location)
         {
             var ping = new PingModel();
-            var collection = GetDB().GetCollection<PingModel>("pings");
+            var collection = GetDB().GetCollection<PingModel>(PINGS_NAME);
             var sort = Builders<PingModel>.Sort.Descending(p => p.PingTime);
             var filter = Builders<PingModel>.Filter.Eq(p=>p.Location,Location);
             ping = collection.Find(filter).Sort(sort).FirstOrDefault();
