@@ -3,6 +3,7 @@ using MongoDB.Bson;
 
 namespace Utilities.Models
 {
+    [Serializable]
     public class SettingsModel
     {
         [BsonElement("_id")]

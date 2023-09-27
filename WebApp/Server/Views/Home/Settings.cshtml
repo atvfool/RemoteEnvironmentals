@@ -1,11 +1,45 @@
 ﻿@model Utilities.Models.SettingsModel
 
-@Html.Hidden("Id", Model.Id)
-<div>
-    Ping Interval
-    @Html.TextBox("PingInterval", Model.PingInterval)
-</div>
-<div>
-    Reboot Interval
-    @Html.TextBox("RebootInterval", Model.ResetInterval)
-</div>
+@using(@Html.BeginForm(null, null, FormMethod.Post, new{id="settingsForm"}))
+{
+    @Html.Hidden("Id", Model.Id)
+    <div class="form-group">
+        <label for="PingInterval">Ping Interval</label>
+        @Html.TextBox("PingInterval", Model.PingInterval, new{@class="form-control"})
+    </div>
+    <div class="form-group">
+        <label for="RebootInterval">Reboot Interval</label>
+        @Html.TextBox("RebootInterval", Model.ResetInterval, new{@class="form-control"})
+    </div>
+    <div class="form-group">
+        <input type="button" id="btnSave" onclick="SaveForm();" value="Save" class="btn btn-primary" />
+    </div>
+    
+
+}
+<script type="text/javascript">
+    async function SaveForm() {
+        let key = '';
+        let qs = getUrlVars()["key"];
+        if(qs!=undefined)
+            key = qs;
+        console.log("key", key)
+        console.log("qs", qs);
+        let form = {
+            Id: $("#Id").val(),
+            PingInterval: $("#PingInterval").val(),
+            ResetInterval: $("#RebootInterval").val(),
+            key: key
+        };
+        let jsonForm = JSON.stringify(form);
+        $.ajax({
+            type: "POST",
+            url: "/API/SaveSettings",
+            data: form
+        }).done(function (response) {
+            console.log("response", response);
+            let res = JSON.parse(response);
+            console.log("res", res);
+        });
+    }
+</script>

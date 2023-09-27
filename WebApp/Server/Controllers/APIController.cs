@@ -50,8 +50,14 @@ namespace Server.Controllers
             {
                 Database db = new Database();
                 result = db.SaveSettings(settings);
+                return new JsonResult("\"{success: " + result.ToString() + "}\"");
             }
-            return new JsonResult("{success: " + result.ToString() + "}");
+            else
+            {
+                return new JsonResult("\"{success: " + result.ToString() + ", 'reason': 'key mismatch'}\"");
+            }
+
+            
         }
 
         [HttpGet]
